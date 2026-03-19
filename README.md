@@ -40,8 +40,9 @@ export CLOUDFLARE_ACCOUNT_ID="your-account-id"
 
 | スコープ | リソース | 権限 |
 |---|---|---|
+| Account | Access: Policies | Edit |
+| Account | Access: Apps | Edit |
 | Account | AI Gateway | Edit |
-| Account | Access: Apps and Policies | Edit |
 
 #### トークン発行機能を使う場合（`aig token create` など）
 
