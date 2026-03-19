@@ -127,6 +127,22 @@ hashflare access app policy add <app-id> --name "Allow team" --email user@exampl
 hashflare access app policy delete <app-id> <policy-id>
 ```
 
+### プロジェクト設定
+
+プロジェクトディレクトリに `hashflare.json` を作成し、リソースを紐づけて管理できます。
+
+```bash
+# 手動でリンク
+hashflare link aig <gateway-id>
+hashflare link app <app-id>
+hashflare link policy <policy-id>
+
+# 紐づけ状況を確認
+hashflare status
+```
+
+`aig create`、`access app create`、`access app policy add` で作成したリソースは自動的にリンクされます。
+
 ### エイリアス
 
 - `ai-gateway` → `aig`

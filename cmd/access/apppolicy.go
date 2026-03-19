@@ -11,6 +11,7 @@ import (
 	"github.com/cloudflare/cloudflare-go/v4/option"
 	"github.com/cloudflare/cloudflare-go/v4/zero_trust"
 	"github.com/hashrock/hashflare/internal/cfclient"
+	"github.com/hashrock/hashflare/internal/project"
 	"github.com/spf13/cobra"
 )
 
@@ -115,6 +116,23 @@ Example:
 		}
 
 		fmt.Fprintf(os.Stderr, "Successfully added policy: %s\n", appPolicyAddName)
+
+		if c, err := project.Load(); err == nil {
+			added := false
+			for _, id := range c.AccessPolicies {
+				if id == p.ID {
+					added = true
+					break
+				}
+			}
+			if !added {
+				c.AccessPolicies = append(c.AccessPolicies, p.ID)
+				if err := project.Save(c); err == nil {
+					fmt.Fprintf(os.Stderr, "Linked to project: %s\n", project.FileName)
+				}
+			}
+		}
+
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
 		return enc.Encode(p)

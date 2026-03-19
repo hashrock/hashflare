@@ -9,6 +9,7 @@ import (
 	cloudflare "github.com/cloudflare/cloudflare-go/v4"
 	"github.com/cloudflare/cloudflare-go/v4/ai_gateway"
 	"github.com/hashrock/hashflare/internal/cfclient"
+	"github.com/hashrock/hashflare/internal/project"
 	"github.com/spf13/cobra"
 )
 
@@ -43,6 +44,14 @@ var createCmd = &cobra.Command{
 		}
 
 		fmt.Fprintf(os.Stderr, "Successfully created AI Gateway: %s\n", args[0])
+
+		if c, err := project.Load(); err == nil {
+			c.AIGateway = args[0]
+			if err := project.Save(c); err == nil {
+				fmt.Fprintf(os.Stderr, "Linked to project: %s\n", project.FileName)
+			}
+		}
+
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
 		return enc.Encode(gw)
