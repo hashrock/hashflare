@@ -15,6 +15,7 @@ var appCmd = &cobra.Command{
 
 func init() {
 	Cmd.AddCommand(appCmd)
+	Cmd.AddCommand(policyCmd)
 	appCmd.AddCommand(listCmd)
 	appCmd.AddCommand(getCmd)
 	appCmd.AddCommand(createCmd)
