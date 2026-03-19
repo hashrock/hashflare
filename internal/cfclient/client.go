@@ -15,12 +15,20 @@ type Settings struct {
 	AccountID string `json:"account_id"`
 }
 
-func loadSettings() *Settings {
+func SettingsPath() (string, error) {
 	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, ".hashflare", "setting.json"), nil
+}
+
+func LoadSettings() *Settings {
+	p, err := SettingsPath()
 	if err != nil {
 		return nil
 	}
-	data, err := os.ReadFile(filepath.Join(home, ".hashflare", "setting.json"))
+	data, err := os.ReadFile(p)
 	if err != nil {
 		return nil
 	}
@@ -31,10 +39,25 @@ func loadSettings() *Settings {
 	return &s
 }
 
+func SaveSettings(s *Settings) error {
+	p, err := SettingsPath()
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(p), 0700); err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(p, append(data, '\n'), 0600)
+}
+
 func NewClient() *cloudflare.Client {
 	token := os.Getenv("CLOUDFLARE_API_TOKEN")
 	if token == "" {
-		if s := loadSettings(); s != nil {
+		if s := LoadSettings(); s != nil {
 			token = s.APIToken
 		}
 	}
@@ -48,7 +71,7 @@ func NewClient() *cloudflare.Client {
 func GetAccountID() string {
 	id := os.Getenv("CLOUDFLARE_ACCOUNT_ID")
 	if id == "" {
-		if s := loadSettings(); s != nil {
+		if s := LoadSettings(); s != nil {
 			id = s.AccountID
 		}
 	}
