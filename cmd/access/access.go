@@ -21,4 +21,5 @@ func init() {
 	appCmd.AddCommand(createCmd)
 	appCmd.AddCommand(updateCmd)
 	appCmd.AddCommand(deleteCmd)
+	appCmd.AddCommand(appPolicyCmd)
 }
